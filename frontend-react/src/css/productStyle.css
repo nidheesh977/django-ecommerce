@@ -1,0 +1,32 @@
+.product-card{
+    float: left;
+    height: 370px;
+    border: 1px solid grey;
+    border-radius: 20px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.product-image-container{
+    height: 200px;
+    border-bottom: 1px solid black;
+}
+
+.product-image{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.btn{
+    margin: 2px;
+}
+
+.form{
+    margin-left: auto;
+}
+
+.search-container{
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
