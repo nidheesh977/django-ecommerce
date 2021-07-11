@@ -6,6 +6,7 @@ from .permissions import ObjIsAdminOrReadOnly, ListIsAdminOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
+from rest_framework import filters
 # Create your views here.
 
 class ProductList(generics.ListCreateAPIView):
@@ -18,6 +19,13 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [ObjIsAdminOrReadOnly]
+
+
+class ProductFilter(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["$name"]
 
 class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
