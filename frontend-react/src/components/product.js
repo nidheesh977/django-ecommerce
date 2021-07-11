@@ -44,7 +44,14 @@ class Product extends Component{
     }
 
     search = ()=>{
-        console.log(this.state.searchValue)
+        var searchValue = this.state.searchValue
+        searchValue = searchValue.replace(/\s+/g, '+')
+        fetch("http://127.0.0.1:8000/product-filter/?search="+searchValue)
+        .then(response => response.json())
+        .then(data => this.setState({
+            productList: data
+        }))
+        
     }
 
     categoryProducts = (id)=>{

@@ -25,7 +25,7 @@ class ProductFilter(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ["$name"]
+    search_fields = ["$name", "$category__title"]
 
 class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
