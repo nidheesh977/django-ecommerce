@@ -9,13 +9,16 @@ class Product extends Component{
         super(props)
         this.state = {
             productList : [],
+            categories : [],
             searchValue : ""
         }
         this.fetchProducts = this.fetchProducts.bind(this)
+        this.fetchCategory = this.fetchCategory.bind(this)
     }
 
     componentWillMount(){
         this.fetchProducts()
+        this.fetchCategory()
     }
 
     fetchProducts(){
@@ -26,30 +29,69 @@ class Product extends Component{
         }))
     }
 
-    changeHandler(e){
-        this.setState({
-            searchValue: e.target.value
-        )}
+    fetchCategory(){
+        fetch("http://127.0.0.1:8000/category/")
+        .then(response => response.json())
+        .then(data => this.setState({
+            categories: data
+        }))
     }
 
+    changeHandler = (e)=>{
+        this.setState({
+            searchValue: e.target.value
+        })
+    }
 
+    search = ()=>{
+        console.log(this.state.searchValue)
+    }
+
+    categoryProducts = (id)=>{
+        if(id==="all"){
+            fetch("http://127.0.0.1:8000/")
+            .then(response => response.json())
+            .then(data => this.setState({
+                productList: data
+            }))
+        }else{
+            fetch("http://127.0.0.1:8000/category-products/"+id+"/")
+            .then(response => response.json())
+            .then(data => this.setState({
+                productList: data
+            }))
+        }
+    }
 
     render(){
         
         var products = this.state.productList;
+        var categories = this.state.categories;
+        var cp = this.categoryProducts
         return (
             <div className = "container">
                 <nav className="navbar navbar-light bg-light search-container">
                     <div className="container-fluid">
-                        <form className="d-flex form">
+                        <div className="d-flex form">
+                            <ul class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" to="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Dropdown link
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li><button class="dropdown-item" onClick = {()=>cp("all")}>All</button></li>
+                                    {categories.map(function(category, index){
+                                        return(
+                                            <li key={index}><button class="dropdown-item" onClick = {()=>cp(category.id)}>{category.title}</button></li>
+                                        )
+                                    })}
+                                    
+                                </ul>
+                            </ul>
                             <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" onChange = {this.changeHandler} />
-                            <button className="btn btn-outline-success">Search</button>
-                        </form>
+                            <button className="btn btn-outline-success" onClick = {this.search}>Search</button>
+                        </div>
                     </div>
                 </nav>
-                <div>
-                    <h1>{this.state.searchValue}</h1>
-                </div>
                 <div className = "row">
                     {products.map(function(product, index){
                         return(
