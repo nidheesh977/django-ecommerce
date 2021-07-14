@@ -15,6 +15,7 @@ class AccountCreateSerializer(serializers.ModelSerializer):
         account = Account()
         account.owner = request.user
         account.name = validated_data["name"]
+        account.name = validated_data["email"]
         account.age = validated_data["age"]
 
         try:
@@ -79,6 +80,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
 
         instance.save()
-        Account.objects.create(owner = instance, name = instance.username)
+        Account.objects.create(owner = instance, name = instance.username, email = instance.email)
         return instance
 

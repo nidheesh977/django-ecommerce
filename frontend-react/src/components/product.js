@@ -1,6 +1,7 @@
 import React, {Component} from "react"
 import { render } from "react-dom"
 import "../css/productStyle.css"
+import axios from "axios"
 
 
 class Product extends Component{
@@ -41,6 +42,12 @@ class Product extends Component{
         this.setState({
             searchValue: e.target.value
         })
+        var searchValue = e.target.value.replace(/\s+/g, '+')
+        fetch("http://127.0.0.1:8000/product-filter/?search="+searchValue)
+        .then(response => response.json())
+        .then(data => this.setState({
+            productList: data
+        }))
     }
 
     search = ()=>{
@@ -70,11 +77,16 @@ class Product extends Component{
         }
     }
 
+    addToCart = (id) => {
+        console.log(id)
+    }
+
     render(){
         
         var products = this.state.productList;
         var categories = this.state.categories;
         var cp = this.categoryProducts
+        var atc = this.addToCart
         return (
             <div className = "container">
                 <nav className="navbar navbar-light bg-light search-container">
@@ -109,7 +121,7 @@ class Product extends Component{
                                 <p>{product.name}</p>
                                 <p>&#8377;{product.price}</p>
                                 <button type="button" class="btn btn-success">Buy</button>
-                                <button type="button" class="btn btn-warning">Add to cart</button>
+                                <button type="button" class="btn btn-warning" onClick = {() => atc(product.id)}>Add to cart</button>
                             </div>
                         )
 

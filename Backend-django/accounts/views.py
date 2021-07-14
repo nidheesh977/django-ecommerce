@@ -6,6 +6,7 @@ from .serializers import AddressSerializer, CreateUserSerializer, AdminUserCreat
 from .permissions import OwnerOnly, AdminOnly
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
 class AccountCreate(generics.CreateAPIView):
@@ -40,7 +41,7 @@ class AddressEdit(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AddressSerializer
     permission_classes = [OwnerOnly]
 
-class Register(generics.CreateAPIView):
+class Register(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
     permission_classes = [permissions.AllowAny]
@@ -67,4 +68,3 @@ class UserEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = AdminUserEditSerializer
     permission_classes = [AdminOnly]
-    
