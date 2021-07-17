@@ -3,10 +3,15 @@ import { Link, NavLink } from "react-router-dom"
 
 class Header extends Component{
 
+    constructor(props){
+        super(props)
+    }
+
 
     logout = () => {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
+        window.location.replace("/");
     }
 
     render(){
@@ -30,6 +35,9 @@ class Header extends Component{
                     </li>
                     <li class="nav-item">
                         <Link class="nav-link" onClick = {this.logout}>Logout</Link>
+                    </li>
+                    <li class="nav-item">
+                        <Link class="nav-link" to = "/account/">Account</Link>
                     </li>
                 </ul>
                 <br />   

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-
 import "../css/register-login.css"
-import axios from "axios"
+import Axios from "axios"
 
 
 class Register extends Component{
@@ -84,28 +83,26 @@ class Register extends Component{
 
     register = (e)=>{
 
-        const url = "http://127.0.0.1:8000/";
+        e.preventDefault()
 
-        const axiosInstance = axios.create({
-            baseURL: url,
-            timeout: 5000
+        Axios.post(`http://127.0.0.1:8000/accounts/register/`, {
+            "username": this.state.username,
+            "password": this.state.password
+        },
+        {
+            headers: {
+                "Content-Type": 'application/json'
+            }
+        }
+        )
+        .then(res => {
+            console.log(res.data)
+            this.props.history.push("/login/")
         })
-
-        axiosInstance
-            .post(`accounts/register/`,{
-                username: this.state.username,
-                email: this.state.email,
-                password: this.state.password
-            })
-            .then((response) => {
-                this.props.history.push("/login")
-                
-            })
-            .catch((error) =>{
-                if(error.response){
-                    document.getElementById("formCheck").innerText = "Something went wrong"
-                }
-            })
+        .catch(error => {
+            console.log(error)
+            document.getElementById("formCheck").innerHTML = "Something went wrong"
+        })
         
     }
 
@@ -114,7 +111,7 @@ class Register extends Component{
             <div class="col-md-4 col-md-offset-4" id="login">
                 <section id="inner-wrapper" className="login">
                     <article>
-                        <div>
+                        <form>
                             <div className="form-group">
                                 <div className="input-group">
                                     <input type="text" className="form-control" id = "username" placeholder="Username" onChange = {this.usernameChangeHandler}/>
@@ -142,7 +139,7 @@ class Register extends Component{
                             <label><input type = "checkbox"  onClick = {this.passwordChangeType}/><span style = {{fontSize : "15px", color: "grey", fontWeight: "500"}}>showPassword</span></label> <br />
                             <div id = "formCheck" className = "error-message"></div>
                             <button className="btn btn-success btn-block" onClick = {this.register}>Register</button>
-                        </div>
+                        </form>
                     </article>
                 </section>
             </div>

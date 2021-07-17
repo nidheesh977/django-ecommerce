@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import { render } from "react-dom"
 import "../css/productStyle.css"
-import axios from "axios"
+import Axios from "axios"
 
 
 class Product extends Component{
@@ -78,7 +78,24 @@ class Product extends Component{
     }
 
     addToCart = (id) => {
-        console.log(id)
+        Axios.post(`http://127.0.0.1:8000/cart/`, {
+            "product": id,
+            "count": 1,
+        },
+        {
+            headers: {
+                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Content-Type": 'application/json'
+            }
+        }
+        )
+        .then((res)=>{
+            console.log(res)
+        })
+    }
+
+    buy = (id) => {
+        console.log("Buy "+id)
     }
 
     render(){
@@ -87,6 +104,7 @@ class Product extends Component{
         var categories = this.state.categories;
         var cp = this.categoryProducts
         var atc = this.addToCart
+        var buy = this.buy
         return (
             <div className = "container">
                 <nav className="navbar navbar-light bg-light search-container">
@@ -120,7 +138,7 @@ class Product extends Component{
                                 </div>
                                 <p>{product.name}</p>
                                 <p>&#8377;{product.price}</p>
-                                <button type="button" class="btn btn-success">Buy</button>
+                                <button type="button" class="btn btn-success" onClick = {() => buy(product.id)}>Buy</button>
                                 <button type="button" class="btn btn-warning" onClick = {() => atc(product.id)}>Add to cart</button>
                             </div>
                         )

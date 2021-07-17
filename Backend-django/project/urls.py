@@ -17,12 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework_simplejwt import views as jwt_views
+from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth-token/', jwt_views.TokenObtainPairView.as_view(), name = "auth-token"),
-    path('auth-token-refresh/', jwt_views.TokenRefreshView.as_view(), name = "auth-token-refresh"),
+    path('token-auth/', obtain_jwt_token),
     path('', include('products.urls', namespace = 'products')),
     path('accounts/', include('accounts.urls', namespace = 'accounts')),
     path('cart/', include('cart.urls', namespace = 'cart')),

@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.min.js"
 import "popper.js/dist/umd/popper.min.js"
 import CheckoutList from './components/checkoutList';
+import Account from './components/account'
 
 ReactDOM.render(
   <Router>
@@ -21,6 +22,7 @@ ReactDOM.render(
           <Route path = "/login/" component = {Login} />
           <Route path = "/cart/" component = {Cart} />
           <Route path = "/checkout-list/" component = {CheckoutList} />
+          <Route path = "/account/" component = {Account} />
         </Switch>
       </React.StrictMode>
   </Router>,

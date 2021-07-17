@@ -1,21 +1,28 @@
 from rest_framework import serializers
 from .models import Cart
 from rest_framework.fields import CurrentUserDefault
+from django.db.models import Q
 
 class CartSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
 
-        cart = Cart()
-        cart.buyer = request.user
-        cart.product = validated_data["product"]
-        try:
-            cart.count = validated_data["count"]
-        except:
-            pass
+        if Cart.objects.filter(buyer = request.user, product = validated_data["product"]).exists():
+            cart = Cart.objects.get(buyer = request.user, product = validated_data["product"])
+            cart.count = cart.count+1
+            cart.save()
 
-        cart.save()
+        else:
+            cart = Cart()
+            cart.buyer = request.user
+            cart.product = validated_data["product"]
+            try:
+                cart.count = validated_data["count"]
+            except:
+                pass
+
+            cart.save()
         return cart
 
 

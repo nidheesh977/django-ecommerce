@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import "../css/register-login.css"
-import axios from "axios"
+import Axios from "axios"
 
 class Login extends Component{
     constructor(props){
@@ -8,7 +8,6 @@ class Login extends Component{
         this.state = {
             username: "",
             password: "",
-            loggedIn: false,
         }
         console.log(props)
     }
@@ -28,31 +27,22 @@ class Login extends Component{
     handleSubmit = (e) => {
         e.preventDefault();
 
-        const url = "http://127.0.0.1:8000/";
-
-        const axiosInstance = axios.create({
-            baseURL: url,
-            timeout: 5000
+        Axios.post(`http://127.0.0.1:8000/token-auth/`, {
+            "username": this.state.username,
+            "password": this.state.password
+        },
+        {
+            headers: {
+                "Content-Type": 'application/json'
+            }
+        }
+        )
+        .then(res => {
+            console.log(res.data.token)
+            localStorage.setItem("token", res.data.token)
+            this.props.history.push("/")
         })
-
-        axiosInstance
-            .post(`auth-token/`, {
-                username: this.state.username,
-                password: this.state.password
-            })
-            .then((res) => {
-                localStorage.setItem('access_token', res.data.access);
-                localStorage.setItem('refresh_token', res.data.refresh);
-                this.props.history.push('/');
-                this.setState({
-                    loggedIn: true
-                })
-            })
-            .catch((error) => {
-                if (error.response){
-                    document.getElementById("invalid").innerHTML = "Invalid credentials"
-                }
-            })
+        .catch(error => console.log(error))
 
         
     }

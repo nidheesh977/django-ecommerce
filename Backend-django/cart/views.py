@@ -2,7 +2,9 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from .models import Cart
 from .serializers import CartSerializer, CartAdminSerializer
+from products.serializers import ProductSerializer
 from .permissions import OwnerOrAdmin
+from products.models import Product
 
 class CartList(generics.ListCreateAPIView):
     def get_queryset(self):
@@ -20,6 +22,24 @@ class CartList(generics.ListCreateAPIView):
         return CartSerializer
         
     permission_classes = [permissions.IsAuthenticated]
+
+
+class CartProductList(generics.ListAPIView):
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_authenticated:
+            product_id = Cart.objects.all().values_list('product', flat=True).distinct()
+        else:
+            product_id = Cart.objects.filter(buyer = user).values_list('product', flat=True).distinct()
+        products = Product.objects.filter(pk__in = list(product_id))
+
+        return products
+
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
 
 
 class CartDetail(generics.RetrieveUpdateDestroyAPIView):

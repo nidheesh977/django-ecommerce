@@ -5,9 +5,42 @@ from .models import Account, Address
 from .serializers import AddressSerializer, CreateUserSerializer, AdminUserCreateSerializer, AdminUserEditSerializer, AccountCreateSerializer, AccountEditSerializer
 from .permissions import OwnerOnly, AdminOnly
 from django.contrib.auth.models import User
+from rest_framework.generics import CreateAPIView
+from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
+from rest_framework import permissions, status
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-# Create your views here.
+from .serializers import UserSerializer, UserSerializerWithToken
+
+
+@api_view(['GET'])
+def current_user(request):
+    """
+    Determine the current user by their token, and return their data
+    """
+    
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
+
+class UserList(APIView):
+    """
+    Create a new user. It's called 'UserList' because normally we'd have a get
+    method here too, for retrieving a list of all User objects.
+    """
+
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        serializer = UserSerializerWithToken(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 class AccountCreate(generics.CreateAPIView):
     queryset = Account.objects.all()
@@ -45,18 +78,6 @@ class Register(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
     permission_classes = [permissions.AllowAny]
-
-class Logout(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-
-        except:
-            return Response(status = status.HTTP_400_BAD_REAQUEST)
 
 
 class UserList(generics.ListCreateAPIView):
