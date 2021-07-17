@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Link, NavLink } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 class Header extends Component{
 
@@ -11,7 +11,7 @@ class Header extends Component{
     logout = () => {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
-        window.location.replace("/");
+        window.location.replace("/login/");
     }
 
     render(){

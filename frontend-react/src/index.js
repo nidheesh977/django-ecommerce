@@ -11,6 +11,7 @@ import "bootstrap/dist/js/bootstrap.min.js"
 import "popper.js/dist/umd/popper.min.js"
 import CheckoutList from './components/checkoutList';
 import Account from './components/account'
+import AccountEdit from './components/account-edit'
 
 ReactDOM.render(
   <Router>
@@ -23,6 +24,7 @@ ReactDOM.render(
           <Route path = "/cart/" component = {Cart} />
           <Route path = "/checkout-list/" component = {CheckoutList} />
           <Route path = "/account/" component = {Account} />
+          <Route path = "/account-edit/" component = {AccountEdit} />
         </Switch>
       </React.StrictMode>
   </Router>,

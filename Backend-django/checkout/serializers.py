@@ -48,7 +48,7 @@ class CartCheckoutSerializer(serializers.ModelSerializer):
         cart_checkout.buyer = user
         cart_checkout.address = validated_data["address"]
         cart_checkout.save()
-
+        
 
         cart_checkout.cart.set(user.cart_set.filter(checked_out = False))
 

@@ -12,6 +12,7 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from .serializers import UserSerializer, UserSerializerWithToken
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 @api_view(['GET'])

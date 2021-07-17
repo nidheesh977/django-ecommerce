@@ -38,15 +38,10 @@ class UserSerializerWithToken(serializers.ModelSerializer):
 
 
 
-
-
-
-
-
 class AccountEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["name", "age", "image"]
+        fields = ["name", "email", "age", "image"]
 
 class AccountCreateSerializer(serializers.ModelSerializer):
 
