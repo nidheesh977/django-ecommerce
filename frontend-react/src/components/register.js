@@ -108,7 +108,7 @@ class Register extends Component{
 
     render(){
         return (
-            <div class="col-md-4 col-md-offset-4" id="login">
+            <div className="col-md-4 col-md-offset-4" id="login">
                 <section id="inner-wrapper" className="login">
                     <article>
                         <form>

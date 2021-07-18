@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import ProductCheckout, CartCheckout
 from cart.models import Cart
+from accounts.models import Address
 
 class ProductCheckoutSerializer(serializers.ModelSerializer):
 
@@ -10,7 +11,7 @@ class ProductCheckoutSerializer(serializers.ModelSerializer):
         product_checkout = ProductCheckout()
         product_checkout.buyer = request.user
         product_checkout.product = validated_data["product"]
-        product_checkout.address = validated_data["address"]
+        product_checkout.address = Address.objects.get(owner = request.user.id)
 
         product_checkout.save()
 
@@ -18,7 +19,7 @@ class ProductCheckoutSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductCheckout
-        exclude = ["buyer"]
+        exclude = ["buyer", "address"]
         extra_kwargs = {
             "delivery_status": {"read_only": True},
             "created_on": {"read_only": True},

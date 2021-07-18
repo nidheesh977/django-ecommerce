@@ -95,7 +95,19 @@ class Product extends Component{
     }
 
     buy = (id) => {
-        console.log("Buy "+id)
+        Axios.post(`http://127.0.0.1:8000/checkout/product-checkout/`, {
+            "product": id
+        },
+        {
+            headers: {
+                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Content-Type": 'application/json'
+            }
+        }
+        )
+        .then((res)=>{
+            console.log(res)
+        })
     }
 
     render(){
@@ -137,7 +149,7 @@ class Product extends Component{
                                     <img src = {product.main_img} className = "product-image"/>
                                 </div>
                                 <p>{product.name}</p>
-                                <p>&#8377;{product.price}</p>
+                                <p>${product.price}</p>
                                 <button type="button" class="btn btn-success" onClick = {() => buy(product.id)}>Buy</button>
                                 <button type="button" class="btn btn-warning" onClick = {() => atc(product.id)}>Add to cart</button>
                             </div>

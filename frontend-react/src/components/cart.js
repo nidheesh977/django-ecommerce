@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import Axios from "axios"
 import "../css/cart.css"
+import {Link} from 'react-router-dom'
 
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 
 class Cart extends Component{
@@ -9,7 +11,8 @@ class Cart extends Component{
         super(props)
         this.state = {
             cartList : [],
-            productList : []
+            productList : [],
+            totalPrice : "",
         }
 
         this.fetchCart = this.fetchCart.bind(this)
@@ -34,6 +37,9 @@ class Cart extends Component{
                 cartList : res.data
             })
             console.log(this.state.cartList)
+            for (var i=0; i<res.data.length; i++){
+                console.log(res.data[i])
+            }
         })
         .then(() => {
             Axios.get(`http://127.0.0.1:8000/cart/cart-products/`,
@@ -153,7 +159,7 @@ class Cart extends Component{
                                                     <i class="fa fa-plus text-success" onClick = {()=>cci(product.id)}></i>
                                                 </div>
                                                 <div>
-                                                    <h5 class="text-grey">&#8377;{product.price*cart.count}</h5>
+                                                    <h5 class="text-grey">${product.price*cart.count}</h5>
                                                 </div>
                                                 <div class="d-flex align-items-center"><i class="fa fa-trash mb-1 text-danger" onClick = {()=>cd(product.id)}></i></div>
                                             </div>
@@ -168,8 +174,11 @@ class Cart extends Component{
                                 })}
                             </div>
                             {cartList.length>=1?(
-                                
-                                <button className = "btn btn-outline-success" onClick = {this.checkout}>Checkout</button>
+                                <div style = {{textAlign: "center"}}>
+                                    <PayPalScriptProvider options={{ "client-id": "test" }}>
+                                        <PayPalButtons style={{ layout: "horizontal" }} />
+                                    </PayPalScriptProvider>
+                                </div>
                             ):(
                                 ""
                             )

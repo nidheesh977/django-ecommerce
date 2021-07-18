@@ -20,9 +20,9 @@ class Address(models.Model):
     addressLine2 = models.CharField(max_length = 200, null = True, blank = True)
     city = models.CharField(max_length = 200, null = True)
     state = models.CharField(max_length = 200, null = True)
-    pincode = models.IntegerField(null = True)
+    pincode = models.CharField(null = True, max_length = 20)
     country = models.CharField(null = True, max_length = 100)
-    mobile = models.IntegerField(null = True)
+    mobile = models.CharField(null = True, max_length = 15)
 
     def __str__(self):
         return self.owner.username

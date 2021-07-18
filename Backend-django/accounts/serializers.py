@@ -71,7 +71,26 @@ class AccountCreateSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = "__all__"
+        exclude = ["owner"]
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+
+        address = Address()
+
+        address.owner = request.user
+        address.fullName = validated_data["fullName"],
+        address.addressLine1 = validated_data["addressLine1"],
+        address.addressLine2 = validated_data["addressLine2"],
+        address.city = validated_data["city"],
+        address.state = validated_data["state"],
+        address.pincode = validated_data["pincode"],
+        address.country = validated_data["country"],
+        address.mobile = validated_data["mobile"],
+
+        address.save()
+
+        return address
 
 
 class AdminUserCreateSerializer(serializers.ModelSerializer):
