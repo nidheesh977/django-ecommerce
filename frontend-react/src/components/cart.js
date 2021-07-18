@@ -56,6 +56,10 @@ class Cart extends Component{
                 })
             })
         })
+        .catch((error) => {
+            alert(error)
+            this.props.history.push("/")
+        })
     }
 
     cartCountIncrement = (id) => {

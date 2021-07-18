@@ -58,7 +58,11 @@ class AccountEdit extends Component{
         )
         .then((res)=>{
             console.log(res)
-            this.fetchAccount()
+            this.props.history.push("/account/")
+        })
+        .catch((error)=>{
+            alert(error)
+            console.log(error)
         })
     }
 
@@ -92,7 +96,6 @@ class AccountEdit extends Component{
             <div className="container" id = "account-edit">
                 <div className = "col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                     <div className="preview text-center">
-                        <img className="preview-img" src={account.image} alt="Preview Image" width="200" height="200"/>
                         <div className="browse-button">
                             <i className="fa fa-pencil-alt"></i>
                             <input className="browse-input" type="file" required name="UploadedFile" id="UploadedFile" onChange = {this.imageChangeHandler}/>

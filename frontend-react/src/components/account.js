@@ -31,24 +31,12 @@ class Account extends Component{
                 account: res.data
             })
         })
-    }
-
-    accountEdit = () => {
-        Axios.put(`http://127.0.0.1:8000/accounts/`,
-        {
-            headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
-                "Content-Type": 'application/json'
-            }
-        }
-        )
-        .then((res)=>{
-            console.log(res)
-            this.setState({
-                account: res.data
-            })
+        .catch((error) => {
+            alert(error)
+            this.props.history.push("/")
         })
     }
+
 
     render(){
         let account = this.state.account

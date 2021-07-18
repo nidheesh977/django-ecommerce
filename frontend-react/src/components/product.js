@@ -91,10 +91,15 @@ class Product extends Component{
         )
         .then((res)=>{
             console.log(res)
+            alert("Product "+id+" added to cart")
+        })
+        .catch((error)=>{
+            alert(error)
         })
     }
 
     buy = (id) => {
+        var id = id
         Axios.post(`http://127.0.0.1:8000/checkout/product-checkout/`, {
             "product": id
         },
@@ -107,6 +112,10 @@ class Product extends Component{
         )
         .then((res)=>{
             console.log(res)
+            alert("Product "+id+" added to buy list" )
+        })
+        .catch((error)=>{
+            alert(error)
         })
     }
 
