@@ -7,10 +7,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework import filters
-# Create your views here.
 
 class ProductList(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by("-id")
     serializer_class = ProductSerializer
     permission_classes = [ListIsAdminOrReadOnly]
 

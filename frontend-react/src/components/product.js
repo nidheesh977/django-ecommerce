@@ -28,6 +28,7 @@ class Product extends Component{
         .then(data => this.setState({
             productList: data
         }))
+        
     }
 
     fetchCategory(){
@@ -77,45 +78,79 @@ class Product extends Component{
         }
     }
 
-    addToCart = (id) => {
+    addToCart = (id, product) => {
         Axios.post(`http://127.0.0.1:8000/cart/`, {
             "product": id,
             "count": 1,
         },
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }
         )
         .then((res)=>{
             console.log(res)
-            alert("Product "+id+" added to cart")
+            alert(product+" "+id+" added to cart")
         })
-        .catch((error)=>{
-            alert(error)
+        .catch((error) => {
+            Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                {
+                    "refresh": localStorage.getItem("refresh-token")
+                },
+                {
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                }
+                )
+                .then((res)=>{
+                    localStorage.setItem("token", res.data.access)
+                    this.addToCart(id, product)
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.props.history.push("/login/")
+                })
         })
     }
 
-    buy = (id) => {
+    buy = (id, product) => {
         var id = id
         Axios.post(`http://127.0.0.1:8000/checkout/product-checkout/`, {
             "product": id
         },
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }
         )
         .then((res)=>{
             console.log(res)
-            alert("Product "+id+" added to buy list" )
+            alert(product+" "+id+" added to buy list" )
         })
-        .catch((error)=>{
-            alert(error)
+        .catch((error) => {
+            Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                {
+                    "refresh": localStorage.getItem("refresh-token")
+                },
+                {
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                }
+                )
+                .then((res)=>{
+                    localStorage.setItem("token", res.data.access)
+                    this.buy(id, product)
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.props.history.push("/login/")
+                })
         })
     }
 
@@ -133,7 +168,7 @@ class Product extends Component{
                         <div className="d-flex form">
                             <ul class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" to="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Dropdown link
+                                    Categories
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 <li><button class="dropdown-item" onClick = {()=>cp("all")}>All</button></li>
@@ -159,8 +194,8 @@ class Product extends Component{
                                 </div>
                                 <p>{product.name}</p>
                                 <p>${product.price}</p>
-                                <button type="button" class="btn btn-success" onClick = {() => buy(product.id)}>Buy</button>
-                                <button type="button" class="btn btn-warning" onClick = {() => atc(product.id)}>Add to cart</button>
+                                <button type="button" class="btn btn-success" onClick = {() => buy(product.id, product.name)}>Buy</button>
+                                <button type="button" class="btn btn-warning" onClick = {() => atc(product.id, product.name)}>Add to cart</button>
                             </div>
                         )
 

@@ -20,20 +20,34 @@ class Account extends Component{
         Axios.get(`http://127.0.0.1:8000/accounts/`,
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }
         )
         .then((res)=>{
-            console.log(res)
             this.setState({
                 account: res.data
             })
         })
         .catch((error) => {
-            alert(error)
-            this.props.history.push("/")
+            Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                {
+                    "refresh": localStorage.getItem("refresh-token")
+                },
+                {
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                }
+                )
+                .then((res)=>{
+                    localStorage.setItem("token", res.data.access)
+                    this.fetchCart()
+                })
+                .catch((error) => {
+                    this.props.history.push("/login/")
+                })
         })
     }
 
@@ -68,10 +82,6 @@ class Account extends Component{
         }else{
             return(
                 <div>
-                    <h1>Account</h1>
-                    <hr />
-                    <h3>Not Logged In</h3>
-                    <Link to="/login/"><button className = "btn btn-outline-info">Login</button></Link>
                 </div>
             )
         }

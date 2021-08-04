@@ -27,7 +27,7 @@ class Login extends Component{
     handleSubmit = (e) => {
         e.preventDefault();
 
-        Axios.post(`http://127.0.0.1:8000/token-auth/`, {
+        Axios.post(`http://127.0.0.1:8000/token/`, {
             "username": this.state.username,
             "password": this.state.password
         },
@@ -38,11 +38,11 @@ class Login extends Component{
         }
         )
         .then(res => {
-            console.log(res.data.token)
-            localStorage.setItem("token", res.data.token)
+            localStorage.setItem("token", res.data.access)
+            localStorage.setItem("refresh-token", res.data.refresh)
             this.props.history.push("/")
         })
-        .catch(error => console.log(error))
+        .catch(error => alert(error))
 
         
     }

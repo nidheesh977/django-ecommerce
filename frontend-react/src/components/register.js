@@ -114,25 +114,25 @@ class Register extends Component{
                         <form>
                             <div className="form-group">
                                 <div className="input-group">
-                                    <input type="text" className="form-control" id = "username" placeholder="Username" onChange = {this.usernameChangeHandler}/>
+                                    <input type="text" className="form-control" id = "username" placeholder="Username" onChange = {this.usernameChangeHandler} required/>
                                 </div>
                                 <div id = "usernameCheck" className = "error-message"></div>
                             </div>
                             <div className="form-group">
                                 <div class="input-group">
-                                    <input type="email" className="form-control" id = "email" placeholder="Email Address" onChange = {this.emailChangeHandler} onBlur = {this.emailValidation}/>
+                                    <input type="email" className="form-control" id = "email" placeholder="Email Address" onChange = {this.emailChangeHandler} onBlur = {this.emailValidation} required/>
                                 </div>
                                 <div id = "emailCheck" className = "error-message"></div>
                             </div>
                             <div className="form-group">
                                 <div className="input-group">
-                                    <input type="password" className="form-control" id = "password" placeholder="Password" onChange = {this.passwordChangeHandler}/>
+                                    <input type="password" className="form-control" id = "password" placeholder="Password" onChange = {this.passwordChangeHandler} required/>
                                     
                                 </div>
                             </div>
                             <div className="form-group">
                                 <div class="input-group">
-                                    <input type="password" className="form-control" id = "confirmPassword" placeholder="Confirm Password" onChange = {this.confirmPasswordChangeHandler}/>
+                                    <input type="password" className="form-control" id = "confirmPassword" placeholder="Confirm Password" onChange = {this.confirmPasswordChangeHandler} required/>
                                 </div>
                                 <div id = "passwordCheck" className = "error-message"></div>
                             </div>

@@ -47,7 +47,7 @@ class CartCheckoutSerializer(serializers.ModelSerializer):
         cart = Cart()
 
         cart_checkout.buyer = user
-        cart_checkout.address = validated_data["address"]
+        cart_checkout.address = Address.objects.get(owner = request.user)
         cart_checkout.save()
         
 
@@ -65,6 +65,7 @@ class CartCheckoutSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "buyer": {"read_only": True},
             "cart": {"read_only": True},
+            "address": {"read_only": True},
             "delivery_status": {"read_only": True},
             "created_on": {"read_only": True},
             }

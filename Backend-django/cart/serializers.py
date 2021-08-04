@@ -8,8 +8,8 @@ class CartSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get('request')
 
-        if Cart.objects.filter(buyer = request.user, product = validated_data["product"]).exists():
-            cart = Cart.objects.get(buyer = request.user, product = validated_data["product"])
+        if Cart.objects.filter(buyer = request.user, product = validated_data["product"], checked_out = False).exists():
+            cart = Cart.objects.get(buyer = request.user, product = validated_data["product"], checked_out = False)
             cart.count = cart.count+1
             cart.save()
 

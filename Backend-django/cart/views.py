@@ -10,10 +10,10 @@ class CartList(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.is_superuser:
-            carts = Cart.objects.all()
+            carts = Cart.objects.all().order_by("-id")
 
         else:
-            carts = Cart.objects.filter(buyer = user, checked_out = False)
+            carts = Cart.objects.filter(buyer = user, checked_out = False).order_by("-id")
         return carts
     
     def get_serializer_class(self):
@@ -28,10 +28,10 @@ class CartProductList(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.is_authenticated:
+        if user.is_superuser:
             product_id = Cart.objects.all().values_list('product', flat=True).distinct()
         else:
-            product_id = Cart.objects.filter(buyer = user).values_list('product', flat=True).distinct()
+            product_id = Cart.objects.filter(buyer = user, checked_out = False).values_list('product', flat=True).distinct()
         products = Product.objects.filter(pk__in = list(product_id))
 
         return products
@@ -51,9 +51,3 @@ class CartDetail(generics.RetrieveUpdateDestroyAPIView):
         return CartSerializer
 
     permission_classes = [OwnerOrAdmin]
-
-
-
-
-
-

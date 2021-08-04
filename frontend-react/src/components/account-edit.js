@@ -25,7 +25,7 @@ class AccountEdit extends Component{
         Axios.get(`http://127.0.0.1:8000/accounts/`,
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }
@@ -51,7 +51,7 @@ class AccountEdit extends Component{
         Axios.put(`http://127.0.0.1:8000/accounts/`, formData,
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }

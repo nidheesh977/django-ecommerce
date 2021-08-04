@@ -10,6 +10,7 @@ class Header extends Component{
 
     logout = () => {
         localStorage.removeItem('token')
+        localStorage.removeItem('refresh-token')
         window.location.replace("/login/");
     }
 
@@ -23,9 +24,9 @@ class Header extends Component{
                     <li class="nav-item">
                         <Link class="nav-link" to="/cart/">Cart</Link>
                     </li>
-                    {/* <li class="nav-item">
+                    <li class="nav-item">
                         <Link class="nav-link" to="/checkout-list/">Checkout-List</Link>
-                    </li> */}
+                    </li>
                     <li class="nav-item">
                         <Link class="nav-link" to="/register/">Register</Link>
                     </li>

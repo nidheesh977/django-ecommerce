@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import Axios from "axios"
 import "../css/cart.css"
-import {Link} from 'react-router-dom'
-
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 
 class Cart extends Component{
@@ -26,26 +23,21 @@ class Cart extends Component{
         Axios.get(`http://127.0.0.1:8000/cart/`,
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }
         )
         .then((res)=>{
-            console.log(res.data)
             this.setState({
                 cartList : res.data
             })
-            console.log(this.state.cartList)
-            for (var i=0; i<res.data.length; i++){
-                console.log(res.data[i])
-            }
         })
         .then(() => {
             Axios.get(`http://127.0.0.1:8000/cart/cart-products/`,
             {
                 headers: {
-                    "Authorization": `JWT `+localStorage.getItem("token"),
+                    "Authorization": `Bearer `+localStorage.getItem("token"),
                     "Content-Type": 'application/json'
                 }
             })
@@ -57,8 +49,26 @@ class Cart extends Component{
             })
         })
         .catch((error) => {
-            alert(error)
-            this.props.history.push("/")
+            Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                {
+                    "refresh": localStorage.getItem("refresh-token")
+                },
+                {
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                }
+                )
+                .then((res)=>{
+                    localStorage.setItem("token", res.data.access)
+                    this.fetchCart()
+                })
+                .catch((error) => {
+                    alert(error)
+                    this.props.history.push("/login/")
+                })
+            
+            
         })
     }
 
@@ -71,7 +81,7 @@ class Cart extends Component{
         },
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }
@@ -79,6 +89,28 @@ class Cart extends Component{
         .then((res)=>{
             console.log(res)
             this.fetchCart()
+        })
+        .catch((error) => {
+            Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                {
+                    "refresh": localStorage.getItem("refresh-token")
+                },
+                {
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                }
+                )
+                .then((res)=>{
+                    localStorage.setItem("token", res.data.access)
+                    this.fetchCart()
+                })
+                .catch((error) => {
+                    alert(error)
+                    this.props.history.push("/login/")
+                })
+            
+            
         })
     }
 
@@ -91,7 +123,7 @@ class Cart extends Component{
         },
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }
@@ -99,6 +131,28 @@ class Cart extends Component{
         .then((res)=>{
             console.log(res)
             this.fetchCart()
+        })
+        .catch((error) => {
+            Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                {
+                    "refresh": localStorage.getItem("refresh-token")
+                },
+                {
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                }
+                )
+                .then((res)=>{
+                    localStorage.setItem("token", res.data.access)
+                    this.fetchCart()
+                })
+                .catch((error) => {
+                    alert(error)
+                    this.props.history.push("/login/")
+                })
+            
+            
         })
         
     }
@@ -109,27 +163,66 @@ class Cart extends Component{
         Axios.delete(`http://127.0.0.1:8000/cart/`+ cart.id + `/`,
         {
             headers: {
-                "Authorization": `JWT `+localStorage.getItem("token"),
+                "Authorization": `Bearer `+localStorage.getItem("token"),
                 "Content-Type": 'application/json'
             }
         }
         )
         .then((res)=>{
             console.log(res)
+            this.fetchCart()
         })
-        this.fetchCart()
     }
 
     checkout = () => {
-        console.log(this.state.cartList)
+        Axios.post(`http://127.0.0.1:8000/checkout/cart-checkout/`, null, 
+        {
+            headers: {
+                "Authorization": `Bearer `+localStorage.getItem("token"),
+                "Content-Type": 'application/json'
+            }
+        }
+        )
+        .then((res)=>{
+            this.fetchCart()
+        })
+        .catch((error) => {
+            Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                {
+                    "refresh": localStorage.getItem("refresh-token")
+                },
+                {
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                }
+            )
+                .then((res)=>{
+                    localStorage.setItem("token", res.data.access)
+                    this.fetchCart()
+                })
+                .catch((error) => {
+                    alert(error)
+                    this.props.history.push("/login/")
+                })
+        })
     }
 
     render(){
-        var productList = this.state.productList
-        var cartList = this.state.cartList
-        var cci = this.cartCountIncrement
-        var ccd = this.cartCountDecrement
-        var cd = this.cartDelete
+        let productList = this.state.productList
+        let cartList = this.state.cartList
+        let cci = this.cartCountIncrement
+        let ccd = this.cartCountDecrement
+        let cd = this.cartDelete
+        let checkout = this.checkout
+
+        let renderCheckoutButton = () => {
+            if(productList[0] !== undefined){
+                console.log(productList)
+                return (<button className = "btn btn-success" style = {{width: "100%"}} onClick = {checkout}>Checkout</button>)
+            }
+        }
+
         return (
             <div>
                 <ui>
@@ -139,8 +232,9 @@ class Cart extends Component{
                                 <div class="p-2">
                                     <h4>Shopping cart</h4>
                                 </div>
+
                                 <hr />
-                                
+
                                 {productList.map(function(product, index){
                                     let cart = cartList.find(c => c.product === product.id);
                                     if (cart !== undefined){
@@ -166,27 +260,14 @@ class Cart extends Component{
                                                     <h5 class="text-grey">${product.price*cart.count}</h5>
                                                 </div>
                                                 <div class="d-flex align-items-center"><i class="fa fa-trash mb-1 text-danger" onClick = {()=>cd(product.id)}></i></div>
-                                            </div>
-
-                                            
-                                        )
-                                    }else{
-                                        return(
-                                            <div><h3 style = {{textAlign : "center", color : "grey"}}>Cart is empty . . .</h3></div>
+                                            </div>  
                                         )
                                     }
                                 })}
+                                <br />
+                                {renderCheckoutButton()}
+                                
                             </div>
-                            {cartList.length>=1?(
-                                <div style = {{textAlign: "center"}}>
-                                    <PayPalScriptProvider options={{ "client-id": "test" }}>
-                                        <PayPalButtons style={{ layout: "horizontal" }} />
-                                    </PayPalScriptProvider>
-                                </div>
-                            ):(
-                                ""
-                            )
-                            }
                         </div>
                     </div>
                 </ui>
