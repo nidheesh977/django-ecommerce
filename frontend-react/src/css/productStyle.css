@@ -1,6 +1,6 @@
 .product-card{
     float: left;
-    height: 370px;
+    height: 420px;
     border: 1px solid grey;
     border-radius: 20px;
     text-align: center;
@@ -29,4 +29,38 @@
 .search-container{
     border-radius: 10px;
     margin-bottom: 5px;
+}
+
+.overlay {
+    position: fixed;
+    visibility: hidden;
+    width: 500px;
+    height: 500px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(206, 206, 206);
+    z-index: 2;
+    margin: auto;
+    border-radius: 20px;
+    border: 1px solid black;
+}
+  
+#text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+}
+
+.payment-btn-container{
+    height: 50px;
+    visibility: hidden;
+}
+
+.address-container{
+    height: 70px;
+    overflow-y: scroll;
 }

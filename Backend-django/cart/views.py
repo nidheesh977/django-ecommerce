@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, views, response
 from .models import Cart
 from .serializers import CartSerializer, CartAdminSerializer
 from products.serializers import ProductSerializer
 from .permissions import OwnerOrAdmin
 from products.models import Product
+import json
 
 class CartList(generics.ListCreateAPIView):
     def get_queryset(self):
@@ -51,3 +52,11 @@ class CartDetail(generics.RetrieveUpdateDestroyAPIView):
         return CartSerializer
 
     permission_classes = [OwnerOrAdmin]
+
+class CartCountView(views.APIView):
+    def get(self, request, format = None):
+        user = request.user
+        cart_count = Cart.objects.filter(buyer = user, checked_out = False).count()
+        return response.Response(cart_count)
+
+    permission_classes = [permissions.IsAuthenticated]

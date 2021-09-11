@@ -44,14 +44,14 @@ class AddressSerializer(serializers.ModelSerializer):
         address = Address()
 
         address.owner = request.user
-        address.fullName = validated_data["fullName"],
-        address.addressLine1 = validated_data["addressLine1"],
-        address.addressLine2 = validated_data["addressLine2"],
-        address.city = validated_data["city"],
-        address.state = validated_data["state"],
-        address.pincode = validated_data["pincode"],
-        address.country = validated_data["country"],
-        address.mobile = validated_data["mobile"],
+        address.fullName = validated_data["fullName"]
+        address.addressLine1 = validated_data["addressLine1"]
+        address.addressLine2 = validated_data["addressLine2"]
+        address.city = validated_data["city"]
+        address.state = validated_data["state"]
+        address.pincode = validated_data["pincode"]
+        address.country = validated_data["country"]
+        address.mobile = validated_data["mobile"]
 
         address.save()
 

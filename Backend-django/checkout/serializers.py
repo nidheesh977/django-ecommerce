@@ -11,7 +11,7 @@ class ProductCheckoutSerializer(serializers.ModelSerializer):
         product_checkout = ProductCheckout()
         product_checkout.buyer = request.user
         product_checkout.product = validated_data["product"]
-        product_checkout.address = Address.objects.get(owner = request.user.id)
+        product_checkout.address = validated_data["address"]
 
         product_checkout.save()
 
@@ -19,7 +19,7 @@ class ProductCheckoutSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductCheckout
-        exclude = ["buyer", "address"]
+        exclude = ["buyer",]
         extra_kwargs = {
             "delivery_status": {"read_only": True},
             "created_on": {"read_only": True},
@@ -47,7 +47,7 @@ class CartCheckoutSerializer(serializers.ModelSerializer):
         cart = Cart()
 
         cart_checkout.buyer = user
-        cart_checkout.address = Address.objects.get(owner = request.user)
+        cart_checkout.address = validated_data["address"]
         cart_checkout.save()
         
 
@@ -65,7 +65,6 @@ class CartCheckoutSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "buyer": {"read_only": True},
             "cart": {"read_only": True},
-            "address": {"read_only": True},
             "delivery_status": {"read_only": True},
             "created_on": {"read_only": True},
             }

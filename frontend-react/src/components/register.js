@@ -20,8 +20,6 @@ class Register extends Component{
         this.setState({
             username : e.target.value
         })
-        document.getElementById("usernameCheck").innerHTML = ""
-        document.getElementById("username").classList.remove("is-invalid")
     }
 
     emailChangeHandler = (e)=>{
@@ -87,7 +85,8 @@ class Register extends Component{
 
         Axios.post(`http://127.0.0.1:8000/accounts/register/`, {
             "username": this.state.username,
-            "password": this.state.password
+            "password": this.state.password,
+            "email" : this.state.email
         },
         {
             headers: {
@@ -96,11 +95,9 @@ class Register extends Component{
         }
         )
         .then(res => {
-            console.log(res.data)
             this.props.history.push("/login/")
         })
         .catch(error => {
-            console.log(error)
             document.getElementById("formCheck").innerHTML = "Something went wrong"
         })
         
@@ -109,9 +106,11 @@ class Register extends Component{
     render(){
         return (
             <div className="col-md-4 col-md-offset-4" id="login">
+                <h3>Register :</h3>
+                <br />
                 <section id="inner-wrapper" className="login">
                     <article>
-                        <form>
+                        <form onSubmit = {this.register}>
                             <div className="form-group">
                                 <div className="input-group">
                                     <input type="text" className="form-control" id = "username" placeholder="Username" onChange = {this.usernameChangeHandler} required/>
@@ -138,7 +137,7 @@ class Register extends Component{
                             </div>
                             <label><input type = "checkbox"  onClick = {this.passwordChangeType}/><span style = {{fontSize : "15px", color: "grey", fontWeight: "500"}}>showPassword</span></label> <br />
                             <div id = "formCheck" className = "error-message"></div>
-                            <button className="btn btn-success btn-block" onClick = {this.register}>Register</button>
+                            <input type = "submit" className="btn btn-success btn-block" value = "Register"/>
                         </form>
                     </article>
                 </section>

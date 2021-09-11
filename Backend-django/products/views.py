@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import generics, permissions, authentication, status
+from rest_framework import generics, permissions, authentication, status, pagination, views
 from .serializers import ProductSerializer, CategorySerializer
 from .models import Product, Category
 from .permissions import ObjIsAdminOrReadOnly, ListIsAdminOrReadOnly
@@ -7,11 +7,19 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework import filters
+from rest_framework.parsers import MultiPartParser, FormParser
+
+class ProductPagination(pagination.PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 10
+
 
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all().order_by("-id")
     serializer_class = ProductSerializer
     permission_classes = [ListIsAdminOrReadOnly]
+    pagination_class = ProductPagination
 
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -21,13 +29,13 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ProductFilter(generics.ListAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by("-id")
     serializer_class = ProductSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ["$name", "$category__title"]
-
+    
 class CategoryList(generics.ListCreateAPIView):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by("-id")
     def create(self, request, *args, **kwargs):
         if request.data["title"] == "":
             request.data._mutable = True
@@ -60,4 +68,3 @@ class CategoryEdit(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [ObjIsAdminOrReadOnly]
-

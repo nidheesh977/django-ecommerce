@@ -31,7 +31,6 @@ class AccountEdit extends Component{
         }
         )
         .then((res)=>{
-            console.log(res)
             this.setState({
                 account: res.data
             })
@@ -57,12 +56,10 @@ class AccountEdit extends Component{
         }
         )
         .then((res)=>{
-            console.log(res)
             this.props.history.push("/account/")
         })
         .catch((error)=>{
             alert(error)
-            console.log(error)
         })
     }
 
@@ -70,7 +67,6 @@ class AccountEdit extends Component{
         this.setState({
             image: e.target.files
         })
-        console.log(e.target.files[0])
     }
 
     nameChangeHandler = (e) => {

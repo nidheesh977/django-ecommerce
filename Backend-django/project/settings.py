@@ -10,8 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-from datetime import timedelta
-
 from pathlib import Path
 from datetime import timedelta
 
@@ -88,7 +86,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "djangoEcommerce",
+        "NAME": "django_ecommerce",
         "USER": "postgres",
         "PASSWORD": "1921u0030",
         "HOST": "localhost",
@@ -186,4 +184,5 @@ SIMPLE_JWT = {
 
 CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
+    "http://localhost:3001"
 )

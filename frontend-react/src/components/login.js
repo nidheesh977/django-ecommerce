@@ -9,7 +9,6 @@ class Login extends Component{
             username: "",
             password: "",
         }
-        console.log(props)
     }
 
     usernameChangeHandler = (e) => {
@@ -40,9 +39,11 @@ class Login extends Component{
         .then(res => {
             localStorage.setItem("token", res.data.access)
             localStorage.setItem("refresh-token", res.data.refresh)
-            this.props.history.push("/")
+            window.location.replace("/")
         })
-        .catch(error => alert(error))
+        .catch((error => {
+            document.getElementById('error').innerHTML = "Invalid credentials"
+        }))
 
         
     }
@@ -50,6 +51,8 @@ class Login extends Component{
     render(){
         return (
             <div className="col-md-4 col-md-offset-4" id="login">
+                <h3>Login :</h3>
+                <br />
                 <section id="inner-wrapper" className="login">
                     <article>
                         <form>
@@ -63,7 +66,7 @@ class Login extends Component{
                                     <input type="password" className="form-control" placeholder="Password" onChange = {this.passwordChangeHandler} />
                                 </div>
                             </div>
-                            <div id = "invalid" className = "error-message"></div>
+                            <div id = "error" className = "error-message"></div>
                             <button className="btn btn-success btn-block" onClick = {this.handleSubmit}>Login</button>
                         </form>
                     </article>

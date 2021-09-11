@@ -9,6 +9,7 @@ class ProductCheckout(models.Model):
     buyer = models.ForeignKey(User, on_delete = models.RESTRICT)
     product = models.ForeignKey(Product, on_delete = models.RESTRICT)
     address = models.ForeignKey(Address, on_delete = models.RESTRICT)
+    payed = models.BooleanField(default = False)
 
     DELIVERY_STATUS = [
         ("processing", "Processing"),
@@ -28,6 +29,7 @@ class CartCheckout(models.Model):
     buyer = models.ForeignKey(User, on_delete = models.RESTRICT)
     cart = models.ManyToManyField(Cart)
     address = models.ForeignKey(Address, on_delete = models.RESTRICT)
+    payed = models.BooleanField(default = False)
 
     DELIVERY_STATUS = [
         ("processing", "Processing"),

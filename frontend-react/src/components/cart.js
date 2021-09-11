@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Axios from "axios"
 import "../css/cart.css"
+import { Link } from "react-router-dom"
 
 
 class Cart extends Component{
@@ -10,6 +11,8 @@ class Cart extends Component{
             cartList : [],
             productList : [],
             totalPrice : "",
+            addresses : [],
+            addressSelected : ""
         }
 
         this.fetchCart = this.fetchCart.bind(this)
@@ -42,7 +45,6 @@ class Cart extends Component{
                 }
             })
             .then((res)=>{
-                console.log(res.data)
                 this.setState({
                     productList : res.data
                 })
@@ -64,7 +66,6 @@ class Cart extends Component{
                     this.fetchCart()
                 })
                 .catch((error) => {
-                    alert(error)
                     this.props.history.push("/login/")
                 })
             
@@ -87,7 +88,6 @@ class Cart extends Component{
         }
         )
         .then((res)=>{
-            console.log(res)
             this.fetchCart()
         })
         .catch((error) => {
@@ -106,7 +106,6 @@ class Cart extends Component{
                     this.fetchCart()
                 })
                 .catch((error) => {
-                    alert(error)
                     this.props.history.push("/login/")
                 })
             
@@ -129,7 +128,6 @@ class Cart extends Component{
         }
         )
         .then((res)=>{
-            console.log(res)
             this.fetchCart()
         })
         .catch((error) => {
@@ -148,7 +146,6 @@ class Cart extends Component{
                     this.fetchCart()
                 })
                 .catch((error) => {
-                    alert(error)
                     this.props.history.push("/login/")
                 })
             
@@ -169,13 +166,64 @@ class Cart extends Component{
         }
         )
         .then((res)=>{
-            console.log(res)
             this.fetchCart()
         })
     }
 
     checkout = () => {
-        Axios.post(`http://127.0.0.1:8000/checkout/cart-checkout/`, null, 
+        document.getElementById("checkout-popup").style.visibility = "hidden"
+        let address = this.state.addressSelected
+        let addresses = this.state.addresses
+
+        if (addresses[0]!==undefined){
+
+            if (address===""){
+                address = addresses[0].id
+            }
+
+            Axios.post(`http://127.0.0.1:8000/checkout/cart-checkout/`, 
+            {
+                address : address
+            }, 
+            {
+                headers: {
+                    "Authorization": `Bearer `+localStorage.getItem("token"),
+                    "Content-Type": 'application/json'
+                }
+            }
+            )
+            .then((res)=>{
+                this.fetchCart()
+                window.location.reload();
+            })
+            .catch((error) => {
+                Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                    {
+                        "refresh": localStorage.getItem("refresh-token")
+                    },
+                    {
+                        headers: {
+                            "Content-Type": 'application/json'
+                        }
+                    }
+                )
+                    .then((res)=>{
+                        localStorage.setItem("token", res.data.access)
+                        this.fetchCart()
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        this.props.history.push("/login/")
+                    })
+            })
+        }
+        else{
+            this.props.history.push("/address/")
+        }
+    }
+
+    buyPopupOn = () => {
+        Axios.get(`http://127.0.0.1:8000/accounts/address/`,
         {
             headers: {
                 "Authorization": `Bearer `+localStorage.getItem("token"),
@@ -184,7 +232,14 @@ class Cart extends Component{
         }
         )
         .then((res)=>{
-            this.fetchCart()
+            this.setState({
+                addresses : res.data
+            })
+            document.getElementById("checkout-popup").style.visibility = "visible"
+        })
+        .then(() => {
+            let default_address = this.state.addresses[0].id
+            document.getElementById(default_address).checked = "true"
         })
         .catch((error) => {
             Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
@@ -196,30 +251,42 @@ class Cart extends Component{
                         "Content-Type": 'application/json'
                     }
                 }
-            )
+                )
                 .then((res)=>{
                     localStorage.setItem("token", res.data.access)
-                    this.fetchCart()
+                    this.buyPopupOn()
                 })
                 .catch((error) => {
-                    alert(error)
                     this.props.history.push("/login/")
                 })
+        })
+    }
+
+    buyPopupOff = () => {
+        document.getElementById("checkout-popup").style.visibility = "hidden"
+    }
+
+    addressChangeHandler = (id) => {
+        this.setState({
+            addressSelected: id
         })
     }
 
     render(){
         let productList = this.state.productList
         let cartList = this.state.cartList
-        let cci = this.cartCountIncrement
-        let ccd = this.cartCountDecrement
-        let cd = this.cartDelete
+        let cartCountIncrement = this.cartCountIncrement
+        let cartCountDecrement = this.cartCountDecrement
+        let cartDelete = this.cartDelete
         let checkout = this.checkout
+        let addresses = this.state.addresses
+        let buyPopupOn = this.buyPopupOn
+        let buyPopupOff = this.buyPopupOff
+        let addressChangeHandler = this.addressChangeHandler
 
         let renderCheckoutButton = () => {
             if(productList[0] !== undefined){
-                console.log(productList)
-                return (<button className = "btn btn-success" style = {{width: "100%"}} onClick = {checkout}>Checkout</button>)
+                return (<button className = "btn btn-success" style = {{width: "100%"}} onClick = {buyPopupOn}>Checkout</button>)
             }
         }
 
@@ -248,24 +315,51 @@ class Cart extends Component{
                                                 <div class="d-flex flex-row align-items-center qty">
                                                     <i class="fa fa-minus text-danger" onClick = {()=>{
                                                         if (cart.count>1){
-                                                            ccd(product.id)
+                                                            cartCountDecrement(product.id)
                                                         }else{
-                                                            cd(product.id)
+                                                            cartDelete(product.id)
                                                         }
                                                     }}></i>
                                                     <h5 class="text-grey mt-1 mr-1 ml-1">&nbsp;{cart.count}&nbsp;</h5>
-                                                    <i class="fa fa-plus text-success" onClick = {()=>cci(product.id)}></i>
+                                                    <i class="fa fa-plus text-success" onClick = {()=>cartCountIncrement(product.id)}></i>
                                                 </div>
                                                 <div>
-                                                    <h5 class="text-grey">${product.price*cart.count}</h5>
+                                                    <h5 class="text-grey">&#8377;{(product.price-(product.price/100*product.discount))*cart.count}</h5>
                                                 </div>
-                                                <div class="d-flex align-items-center"><i class="fa fa-trash mb-1 text-danger" onClick = {()=>cd(product.id)}></i></div>
+                                                <div class="d-flex align-items-center"><i class="fa fa-trash-o mb-1 text-danger" onClick = {()=>cartDelete(product.id)}></i></div>
                                             </div>  
                                         )
                                     }
                                 })}
                                 <br />
                                 {renderCheckoutButton()}
+                                <div className = "overlay" id = "checkout-popup" style = {{textAlign:"center"}}>
+                                    <button type="button" className="btn-close btn-close" aria-label="Close" style = {{float: "right", margin: "10px"}} onClick={() => buyPopupOff()}></button>
+                                    <div id="text">
+                                        
+                                        <h5 style = {{textAlign : "left"}}>Select Address :</h5>
+                                        {addresses.map(function(address, index){
+                                            return(
+                                                <label onClick = {() => addressChangeHandler(address.id)} style = {{width:"350px", textAlign:"left"}}>
+                                                    <input type = "radio" value = {address.id} name = "address" id = {address.id}/>
+                                                    {address.addressLine1 + " , " + address.addressLine2 + " , " + address.city + " ..."}
+                                                </label>
+                                            ) 
+                                            
+                                        })}
+
+                                        <button className = "btn btn-primary">
+                                            <Link to = "/address/" style = {{color: "white", textDecoration: "none"}}>
+                                                Create new address
+                                            </Link>
+                                        </button>
+
+                                        <hr />
+
+                                        <button className = "btn btn-success disabled"  onClick={checkout} id = "pay-now" >Pay now</button>
+                                        <button className = "btn btn-warning"  onClick={checkout} id = "pay-on-delivery" >Pay on delivery</button>
+                                    </div>
+                                </div>
                                 
                             </div>
                         </div>

@@ -28,7 +28,7 @@ class Account(generics.RetrieveUpdateAPIView):
 class AddressList(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
-        address = user.address_set.all()
+        address = user.address_set.all().order_by("-id")
         return address
 
     serializer_class = AddressSerializer
