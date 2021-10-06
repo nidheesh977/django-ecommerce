@@ -324,7 +324,7 @@ class Cart extends Component{
                                                     <i class="fa fa-plus text-success" onClick = {()=>cartCountIncrement(product.id)}></i>
                                                 </div>
                                                 <div>
-                                                    <h5 class="text-grey">&#8377;{(product.price-(product.price/100*product.discount))*cart.count}</h5>
+                                                    <h5 class="text-grey">${(product.price-(product.price/100*product.discount))*cart.count}</h5>
                                                 </div>
                                                 <div class="d-flex align-items-center"><i class="fa fa-trash-o mb-1 text-danger" onClick = {()=>cartDelete(product.id)}></i></div>
                                             </div>  

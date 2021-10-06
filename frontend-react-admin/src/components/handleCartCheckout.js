@@ -178,7 +178,7 @@ class HandleCartCheckout extends Component{
                                                                 <h5>{cart.count}</h5>
                                                             </div>
                                                             <div> 
-                                                                <h5 class="text-grey">&#8377;{product.price*cart.count}</h5>
+                                                                <h5 class="text-grey">${product.price*cart.count}</h5>
                                                             </div>
                                                         </div>
                                                         

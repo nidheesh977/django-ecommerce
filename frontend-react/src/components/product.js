@@ -3,8 +3,8 @@ import { render } from "react-dom"
 import "../css/productStyle.css"
 import Axios from "axios"
 import {Link} from "react-router-dom"
-import Payment from "./payment"
-
+import {PayPalScriptProvider, PayPalButtons} from "@paypal/react-paypal-js"
+import toast, {Toaster} from "react-hot-toast"
 
 class Product extends Component{
 
@@ -17,7 +17,11 @@ class Product extends Component{
             categories : [],
             searchValue : "",
             addresses : [],
-            addressSelected : ""
+            addressSelected : "",
+            buy: 0,
+            buy_product_price: 0,
+            buy_product_id: 0,
+            buy_product_name: 0
         }
         this.fetchProducts = this.fetchProducts.bind(this)
         this.fetchCategory = this.fetchCategory.bind(this)
@@ -190,7 +194,7 @@ class Product extends Component{
         }
     }
 
-    buyPopupOn = (id) => {
+    buyPopupOn = (id, price, name) => {
         
         Axios.get(`http://127.0.0.1:8000/accounts/address/`,
         {
@@ -206,6 +210,12 @@ class Product extends Component{
                 checkout: true
             })
             document.getElementById(id).style.visibility = "visible"
+            this.setState({
+                buy: 1,
+                buy_product_price: price,
+                buy_product_id : id,
+                buy_product_name : name,
+            })
         })
         .then(() => {
             if (this.state.addresses[0]){
@@ -237,6 +247,9 @@ class Product extends Component{
 
     buyPopupOff = (id) => {
         document.getElementById(id).style.visibility = "hidden"
+        this.setState({
+            buy: 0
+        })
     }
 
     productPage = (page) => {
@@ -281,6 +294,101 @@ class Product extends Component{
         }
     }
 
+    payment = () => {
+        if(this.state.buy == 1){
+            return(
+                <div>
+        
+                    <PayPalScriptProvider options = {
+                            {
+                                "client-id": "ARC3oG0J-V4Ygjao-9-NIf66jCoZj7vNU6FwN4wMGzATXULO9LbdjBtCCuBwA3NcXk7qygr651WQzpmu",
+                                currency: "USD"
+                            }
+                        }>
+                        <PayPalButtons style = {{"layout": "horizontal"}}
+                            createOrder = {(data, actions) => {
+                                return actions.order.create({
+                                    purchase_units: [
+                                        {
+                                            amount: {
+                                                value: this.state.buy_product_price,
+                                            }
+                                        }
+                                    ]
+                                })
+                            }}
+                            onApprove = {
+                                () => {
+                                    toast.success("Payed successfully. Thankyou.", {
+                                        duration: 10000
+                                    })
+
+                                    let addresses = this.state.addresses
+                                    
+                                    if(addresses[0]!==undefined){
+                                        let addressSelected = this.state.addressSelected
+                                        let id = this.state.buy_product_id
+                                        let product = this.state.buy_product_name
+                            
+                                        let address = addressSelected
+                            
+                                        if (address === ""){
+                                            address = addresses[0].id
+                                        }
+                                        Axios.post(`http://127.0.0.1:8000/checkout/payed-product-checkout/`, {
+                                            "product": id,
+                                            "address": address
+                                        },
+                                        {
+                                            headers: {
+                                                "Authorization": `Bearer `+localStorage.getItem("token"),
+                                                "Content-Type": 'application/json'
+                                            }
+                                        }
+                                        )
+                                        .catch((error) => {
+                                            Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
+                                                {
+                                                    "refresh": localStorage.getItem("refresh-token")
+                                                },
+                                                {
+                                                    headers: {
+                                                        "Content-Type": 'application/json'
+                                                    }
+                                                }
+                                                )
+                                                .then((res)=>{
+                                                    localStorage.setItem("token", res.data.access)
+                                                    this.buy(id, product)
+                                                })
+                                                .catch((error) => {
+                                                    this.props.history.push("/login/")
+                                                })
+                                        })
+                                    }else{
+                                        this.props.history.push("/address/")
+                                    }
+                                }
+                            }
+                            onError = {
+                                () => {toast.error("Something went wrong. Try again.", {
+                                    duration: 10000
+                                })}
+                            }
+                            onCancel = {
+                                () => {toast("You cancelled the payment.", {
+                                    duration: 10000
+                                })}
+                            }
+                        />
+                    </PayPalScriptProvider>
+        
+                </div>
+            )
+
+        }
+    }
+
 
     render(){
         let products = this.state.productList;
@@ -318,6 +426,7 @@ class Product extends Component{
                         </div>
                     </div>
                 </nav>
+                <Toaster/>
                 <div className = "row">
                     {products.map(function(product, index){
                         return(
@@ -326,18 +435,18 @@ class Product extends Component{
                                     <img src = {product.main_img} className = "product-image"/>
                                 </div>
                                 <p>{product.name}</p>
-                                <p style = {{color: "red"}}>&#8377;<strike>{product.price}</strike></p>
-                                <p>&#8377;{product.price-(product.price/100*product.discount)}</p>
-                                <button type="button" class="btn btn-success" onClick = {() => buyPopupOn(product.id)}>Buy</button>
+                                <p style = {{color: "red"}}>$<strike>{product.price}</strike></p>
+                                <p>${product.price-(product.price/100*product.discount)}</p>
+                                <button type="button" class="btn btn-success" onClick = {() => buyPopupOn(product.id, product.price-(product.price/100*product.discount), product.name)}>Buy</button>
                                 <button type="button" class="btn btn-warning" onClick = {() => addToCart(product.id, product.name)}>Add to cart</button>
                                 <div className = "overlay" id = {product.id}>
                                     <button type="button" className="btn-close btn-close" aria-label="Close" style = {{float: "right", margin: "10px"}} onClick={() => buyPopupOff(product.id)}></button>
                                     <div id="text">
-                                        <div className = "product-image-container" style = {{height: "100px", textAlign: "center", borderBottom:"0"}}>
+                                        <div className = {"product-image-container"} style = {{height: "100px", textAlign: "center", borderBottom:"0"}}>
                                             <img src = {product.main_img} className = "product-image"/>
                                         </div>
                                         <p>{product.name}</p>
-                                        <p>&#8377;{product.price}</p>
+                                        <p>${product.price-(product.price/100*product.discount)}</p>
                                         <hr/>
                                         <h5 style = {{textAlign: "left"}}>Select Address :</h5>
                                         <div className = "address-container">
@@ -362,10 +471,10 @@ class Product extends Component{
                                         <hr />
 
                                         <button className = "btn btn-warning"  onClick={() => buy(product.id, product.name)} id = "pay-on-delivery" >Pay on delivery</button>
-
-                                        <div className = "payment-btn-container">
-                                            {payment}
-                                        </div>
+                                        <br />
+                                        
+                                        {payment()}
+                                        
                                         
 
                                     </div>

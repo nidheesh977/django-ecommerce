@@ -43,6 +43,8 @@ class Header extends Component{
                     }
                 }
                 )
+
+                
                 .then((res)=>{
                     localStorage.setItem("token", res.data.access)
                 })

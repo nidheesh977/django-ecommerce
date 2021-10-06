@@ -135,7 +135,7 @@ class HandleProductCheckout extends Component{
                                                     </div>
                                                     
                                                     <div>
-                                                        <h5 class="text-grey">&#8377;{product.price}</h5>
+                                                        <h5 class="text-grey">${product.price}</h5>
                                                     </div>
                                                 </div>
                                                 <div>

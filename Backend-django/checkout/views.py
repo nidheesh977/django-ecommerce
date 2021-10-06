@@ -8,6 +8,7 @@ from .models import (
 
 from .serializers import (
     ProductCheckoutSerializer,
+    PayedProductCheckoutSerializer,
     ProductCheckoutAdminSerializer,
     CartCheckoutSerializer,
     CartCheckoutAdminSerializer,
@@ -44,6 +45,12 @@ class ProductCheckoutView(generics.ListCreateAPIView):
 
         return ProductCheckoutSerializer
 
+    permission_classes = [permissions.IsAuthenticated]
+
+class PayedProductCheckoutView(generics.CreateAPIView):
+    
+    queryset = ProductCheckout.objects.all()
+    serializer_class = PayedProductCheckoutSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 

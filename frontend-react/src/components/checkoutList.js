@@ -217,7 +217,7 @@ class CheckoutList extends Component{
                                                     </div>
                                                     
                                                     <div>
-                                                        <h5 class="text-grey">&#8377;{product.price-(product.price/100*product.discount)}</h5>
+                                                        <h5 class="text-grey">${product.price-(product.price/100*product.discount)}</h5>
                                                     </div>
                                                     <div class="d-flex align-items-center"  onClick = {()=>deleteProductCheckout(productCheckout.id)}><i class="fa fa-trash mb-1 text-danger"></i></div>
                                                 </div>
@@ -261,7 +261,7 @@ class CheckoutList extends Component{
                                                                 <h5>{cart.count}</h5>
                                                             </div>
                                                             <div> 
-                                                                <h5 class="text-grey">&#8377;{(product.price-(product.price/100*product.discount))*cart.count}</h5>
+                                                                <h5 class="text-grey">${(product.price-(product.price/100*product.discount))*cart.count}</h5>
                                                             </div>
                                                         </div>
                                                         

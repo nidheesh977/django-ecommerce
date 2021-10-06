@@ -25,6 +25,32 @@ class ProductCheckoutSerializer(serializers.ModelSerializer):
             "created_on": {"read_only": True},
             }
 
+
+class PayedProductCheckoutSerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+
+        product_checkout = ProductCheckout()
+        product_checkout.buyer = request.user
+        product_checkout.product = validated_data["product"]
+        product_checkout.address = validated_data["address"]
+        product_checkout.payed = True
+
+        product_checkout.save()
+
+        return product_checkout
+
+    class Meta:
+        model = ProductCheckout
+        exclude = ["buyer",]
+        extra_kwargs = {
+            "delivery_status": {"read_only": True},
+            "created_on": {"read_only": True},
+            }
+
+
+
 class ProductCheckoutAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCheckout
