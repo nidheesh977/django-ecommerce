@@ -114,7 +114,9 @@ class Product extends Component{
         }
         )
         .then((res)=>{
-            alert(product+" "+" added to cart")
+            toast(product+" "+" added to cart",{
+                duration: 5000
+            })
         })
         .catch((error) => {
             Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
@@ -168,7 +170,9 @@ class Product extends Component{
             }
             )
             .then((res)=>{
-                alert(product+" "+" added to checkout list" )
+                toast.success(product+" added to checkout list",{
+                    duration: 5000
+                })
             })
             .catch((error) => {
                 Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
@@ -320,7 +324,7 @@ class Product extends Component{
                             onApprove = {
                                 () => {
                                     toast.success("Payed successfully. Thankyou.", {
-                                        duration: 10000
+                                        duration: 5000
                                     })
 
                                     let addresses = this.state.addresses
@@ -346,6 +350,11 @@ class Product extends Component{
                                             }
                                         }
                                         )
+                                        .then((res)=>{
+                                            toast("Payed successfuly. " + product + " added to checkout list",{
+                                                duration: 5000
+                                            })
+                                        })
                                         .catch((error) => {
                                             Axios.post(`http://127.0.0.1:8000/token/refresh/`, 
                                                 {
@@ -372,12 +381,12 @@ class Product extends Component{
                             }
                             onError = {
                                 () => {toast.error("Something went wrong. Try again.", {
-                                    duration: 10000
+                                    duration: 5000
                                 })}
                             }
                             onCancel = {
                                 () => {toast("You cancelled the payment.", {
-                                    duration: 10000
+                                    duration: 5000
                                 })}
                             }
                         />

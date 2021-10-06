@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import "../css/register-login.css"
 import Axios from "axios"
+import toast, {Toaster} from 'react-hot-toast'
 
 
 class Address extends Component{
@@ -86,7 +87,10 @@ class Address extends Component{
         }
         )
         .then(res => {
-            alert("Address created")
+            toast("Address created",{
+                duration: 5000
+            })
+            
             this.props.history.push("/")
         })
         .catch((error) => {
@@ -113,6 +117,7 @@ class Address extends Component{
     render(){
         return (
             <div className="col-md-4 col-md-offset-4" id="login">
+                <Toaster/>
                 <h3>Create Address</h3>
                 <br />
                 <br />

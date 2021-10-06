@@ -224,6 +224,8 @@ class CheckoutList extends Component{
                                                 <div>
                                                     <h6>Checked out at : {productCheckout.created_on.substring(8,10) + productCheckout.created_on.substring(4,8) + productCheckout.created_on.substring(0,4)}</h6>
                                                     <h6>Delivery status : {productCheckout.delivery_status}</h6>
+                                                    <h6>Payment status : {productCheckout.payed ? "Payed" : "Not payed"}</h6>
+                                                    
                                                 </div>
                                                 <hr />
                                             </div>

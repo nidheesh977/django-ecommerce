@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import Axios from "axios"
 import { Link } from "react-router-dom"
 import "../css/account.css"
+import toast, {Toaster} from "react-hot-toast"
 
 class Account extends Component{
     constructor(props){
@@ -102,7 +103,9 @@ class Account extends Component{
             this.fetchAddress()
         })
         .catch((error) => {
-            alert("You cant delete this address because you used this address to buy products!")
+            toast("You cant delete this address because you used this address to buy products!", {
+                duration: 5000
+            })
         })
     }
 
@@ -114,6 +117,7 @@ class Account extends Component{
         if(account !== undefined){
             return(
                 <div>
+                    <Toaster />
                     <div className="card mb-3" style={{maxWidth: "540px"}} id = "account-details">
                         <div className="row g-0">
                             <div className="col-md-4">
